@@ -1,0 +1,22 @@
+[Unit]
+Description=AMF TradingView to Capital.com webhook relay
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=amf
+Group=amf
+WorkingDirectory=/opt/amf-relay
+ExecStart=/opt/amf-relay/venv/bin/uvicorn app.main:create_app --factory --host 127.0.0.1 --port 8000 --proxy-headers --forwarded-allow-ips=127.0.0.1 --no-access-log
+Restart=always
+RestartSec=5
+# hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/amf-relay/data
+
+[Install]
+WantedBy=multi-user.target

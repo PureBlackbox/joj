@@ -1,0 +1,15 @@
+# Replace relay.example.com with your own (sub)domain. Caddy fetches and renews the HTTPS
+# certificate automatically. Only /webhook and /health are reachable from the internet;
+# /status and /admin/* are deliberately NOT proxied (use SSH on the server instead).
+relay.example.com {
+    request_body {
+        max_size 16KB
+    }
+    @public path /webhook /health
+    handle @public {
+        reverse_proxy 127.0.0.1:8000
+    }
+    handle {
+        respond "Not found" 404
+    }
+}
